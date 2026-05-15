@@ -1,111 +1,118 @@
-# ProjectHub for Students
+# ProjectHub for Students 🚀
 
-A modern collaboration platform for college students to find project teammates, manage workspaces, and build their collaboration scores.
+> A collaboration operating system for college students to find trustworthy teammates, build projects together, and generate verified proof-of-work.
 
-## Tech Stack
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS (with glassmorphism 3D UI)
-- **Database & Auth**: Supabase (PostgreSQL)
-- **Icons**: Lucide React
+![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3-38bdf8?logo=tailwindcss)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e?logo=supabase)
 
-## Setup Instructions
+---
 
-### 1. Supabase Setup
-Create a new Supabase project and run the following SQL in the SQL Editor to set up the database schema:
+## 🎯 What It Solves
 
-```sql
-CREATE TABLE profiles (
-  id UUID REFERENCES auth.users(id) PRIMARY KEY,
-  name TEXT NOT NULL,
-  college_email TEXT UNIQUE NOT NULL,
-  branch TEXT NOT NULL,
-  year INTEGER NOT NULL,
-  skills TEXT[] NOT NULL,
-  bio TEXT,
-  github_url TEXT,
-  behance_url TEXT,
-  collaboration_score DECIMAL(3,2) DEFAULT 5.00,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+College students struggle to find trustworthy teammates for projects, hackathons, and startups. They bounce between WhatsApp, Discord, LinkedIn, and GitHub. **ProjectHub brings everything together** — with a key innovation: **anonymous applications first**, so identity is hidden until the project owner accepts, removing fear of rejection and branch bias.
 
-CREATE TABLE projects (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  owner_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  title TEXT NOT NULL,
-  description TEXT NOT NULL,
-  required_skills TEXT[] NOT NULL,
-  team_size_needed INTEGER NOT NULL,
-  deadline DATE,
-  category TEXT NOT NULL,
-  is_anonymous BOOLEAN DEFAULT false,
-  status TEXT DEFAULT 'open',
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+---
 
-CREATE TABLE applications (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
-  applicant_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  anonymous_pitch TEXT NOT NULL,
-  experience_summary TEXT,
-  status TEXT DEFAULT 'pending',
-  applied_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(project_id, applicant_id)
-);
+## ✨ Features
 
-CREATE TABLE teams (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+| Feature | Description |
+|---|---|
+| 🔐 **College Email Auth** | OTP-based login restricted to `@kalasalingam.ac.in` |
+| 📋 **Requirement Board** | Post & discover open project requirements with skill filters |
+| 🎭 **Anonymous Applications** | Apply without revealing identity; revealed only on acceptance |
+| 🏗️ **Team Workspace** | Kanban task board for accepted teams |
+| 💬 **Communities** | 8 interest-based communities with live chat + discussion threads |
+| 📩 **Private Chats** | 1:1 messaging with real-time delivery (Supabase Realtime) |
+| ⭐ **Peer Endorsements** | Post-project rating system that builds a collaboration score |
+| 👤 **Skill Profiles** | Verified portfolio of skills, projects, and endorsements |
 
-CREATE TABLE team_members (
-  team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
-  profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  joined_at TIMESTAMPTZ DEFAULT NOW(),
-  PRIMARY KEY (team_id, profile_id)
-);
+---
 
-CREATE TABLE workspace_tasks (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
-  title TEXT NOT NULL,
-  status TEXT DEFAULT 'pending',
-  assigned_to UUID REFERENCES profiles(id),
-  due_date DATE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+## 🛠️ Tech Stack
 
-CREATE TABLE endorsements (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
-  giver_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  receiver_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  rating INTEGER CHECK (rating BETWEEN 1 AND 5),
-  feedback TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+- **Frontend**: Next.js 14 (App Router), Tailwind CSS, Lucide React
+- **Backend**: Supabase (PostgreSQL + Auth + Realtime + Storage)
+- **Auth**: Supabase OTP with college email domain restriction
+- **Real-time**: Supabase Realtime channels for community + private chat
+- **Design**: Glassmorphism UI with 3D effects and micro-animations
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/aravindaariv0904-collab/projecthub-for-students.git
+cd projecthub-for-students
+npm install
 ```
 
-### 2. Environment Variables
-Create a `.env.local` file in the root of the `projecthub` directory and add your Supabase credentials:
-```
+### 2. Set up environment variables
+Create `.env.local`:
+```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-**Note**: In Supabase Auth Settings, configure Email Auth and set up the Email domain allowlist if you want to strictly enforce `@kalasalingam.ac.in` at the database level. Alternatively, the app checks it on the frontend.
-
-### 3. Run Locally
+### 3. Run the app
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000)
 
-## Features
-- **OTP Login**: Secure passwordless login using college email.
-- **Smart Dashboard**: Filter projects by skills, categories, or search terms.
-- **Anonymous Applications**: Apply to projects without bias; owners review based solely on skills and pitch.
-- **Workspace**: Built-in Kanban task board for active teams.
-- **Endorsements**: Peer review system that updates student collaboration scores upon project completion.
-- **Modern UI**: Stunning glassmorphism and 3D visual effects.
+### 4. Try Demo Mode (no Supabase needed)
+| Field | Value |
+|---|---|
+| Email | `demo@kalasalingam.ac.in` |
+| OTP | `123456` |
+
+---
+
+## 📄 Pages
+
+| Route | Page |
+|---|---|
+| `/` | Landing page |
+| `/auth/verify` | Email + OTP login |
+| `/onboarding` | Multi-step profile setup |
+| `/dashboard` | 3-tab hub (Projects, Communities, Chats) |
+| `/project/create` | Post a new project requirement |
+| `/project/[id]` | Project detail + anonymous apply |
+| `/project/[id]/applications` | Review anonymous applications (owner) |
+| `/workspace/[id]` | Team workspace with Kanban board |
+| `/communities` | Browse all 8 communities |
+| `/community/[id]` | Live chat + discussions + members |
+| `/chats` | Private messages list |
+| `/chats/[id]` | 1:1 real-time chat |
+| `/profile/[id]` | Public skill profile with endorsements |
+| `/profile/edit` | Edit your profile |
+| `/endorse/[id]` | Rate teammates after project completion |
+
+---
+
+## 🗄️ Database Schema
+
+Run the SQL from `supabase-schema.sql` in your Supabase dashboard to set up all tables:
+- `profiles`, `projects`, `applications`, `teams`, `team_members`
+- `workspace_tasks`, `endorsements`
+- `communities`, `community_members`, `community_threads`
+- `messages`, `private_chats`
+
+---
+
+## 📱 Screenshots
+
+Coming soon — run the demo to explore all features live.
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first.
+
+---
+
+## 📝 License
+
+MIT © 2025 Kalasalingam University — Built for students, by students 🚀
