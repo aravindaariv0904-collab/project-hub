@@ -1,27 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-gray-200 box-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply text-gray-900 min-h-screen font-sans antialiased;
+    background: radial-gradient(ellipse at top right, #eff6ff 0%, #ffffff 50%, #eef2ff 100%);
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* ── Glass Morphism ─────────────────────────────── */
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-xl;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    @apply shadow-card rounded-2xl;
+  }
+
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(16px);
+    @apply border border-white/10 rounded-2xl;
+  }
+
+  /* ── Card Hover 3D Effect ───────────────────────── */
+  .card-hover {
+    @apply transition-all duration-300 cursor-pointer;
+    transform-style: preserve-3d;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-6px) rotateX(2deg);
+    @apply shadow-card-hover;
+  }
+
+  /* ── Text Gradient ──────────────────────────────── */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #2563eb 0%, #6366f1 50%, #8b5cf6 100%);
+  }
+
+  .text-gradient-warm {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  }
+
+  /* ── Buttons ────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md;
+    &:hover {
+      @apply bg-blue-700 shadow-glow -translate-y-0.5;
+    }
+    &:active {
+      @apply translate-y-0 shadow-md;
+    }
+    &:disabled {
+      @apply opacity-60 cursor-not-allowed translate-y-0 shadow-md;
+    }
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white text-blue-600 font-semibold border border-blue-200 px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm;
+    &:hover {
+      @apply bg-blue-50 border-blue-300 -translate-y-0.5 shadow;
+    }
+    &:disabled {
+      @apply opacity-60 cursor-not-allowed;
+    }
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md;
+    &:hover {
+      @apply bg-red-700 -translate-y-0.5;
+    }
+  }
+
+  .btn-success {
+    @apply inline-flex items-center justify-center gap-2 bg-emerald-600 text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md;
+    &:hover {
+      @apply bg-emerald-700 -translate-y-0.5;
+    }
+  }
+
+  /* ── Input Field ────────────────────────────────── */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/60 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400;
+    backdrop-filter: blur(4px);
+    &:focus {
+      @apply bg-white ring-2 ring-blue-500/40 border-blue-400;
+    }
+  }
+
+  .input-field:focus {
+    background: white;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  /* ── Section / Page Titles ──────────────────────── */
+  .page-title {
+    @apply text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight;
+  }
+
+  .section-title {
+    @apply text-xl font-bold text-gray-900;
+  }
+
+  /* ── Status Badges ──────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-blue {
+    @apply badge bg-blue-100 text-blue-700;
+  }
+
+  .badge-green {
+    @apply badge bg-emerald-100 text-emerald-700;
+  }
+
+  .badge-yellow {
+    @apply badge bg-yellow-100 text-yellow-700;
+  }
+
+  .badge-red {
+    @apply badge bg-red-100 text-red-700;
+  }
+
+  .badge-purple {
+    @apply badge bg-purple-100 text-purple-700;
+  }
+
+  /* ── Skill Tag ──────────────────────────────────── */
+  .skill-tag {
+    @apply inline-flex px-3 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 transition-all duration-200;
+    &:hover {
+      @apply bg-blue-100 scale-105;
+    }
+  }
+
+  /* ── Category Colors ────────────────────────────── */
+  .category-hackathon  { @apply bg-orange-50 text-orange-700 border-orange-100; }
+  .category-startup    { @apply bg-emerald-50 text-emerald-700 border-emerald-100; }
+  .category-fyp        { @apply bg-purple-50 text-purple-700 border-purple-100; }
+  .category-research   { @apply bg-blue-50 text-blue-700 border-blue-100; }
+  .category-opensource { @apply bg-gray-50 text-gray-700 border-gray-200; }
+  .category-competition { @apply bg-red-50 text-red-700 border-red-100; }
+
+  /* ── Divider ────────────────────────────────────── */
+  .divider {
+    @apply border-t border-gray-100 my-6;
+  }
+
+  /* ── Loading Spinner ────────────────────────────── */
+  .spinner {
+    @apply animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent;
+  }
+
+  /* ── Empty State ────────────────────────────────── */
+  .empty-state {
+    @apply glass-card p-12 text-center flex flex-col items-center justify-center gap-4;
+  }
+
+  /* ── Scrollbar ──────────────────────────────────── */
+  ::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-blue-200 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-blue-400;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* ── 3D Floating Orbs (Landing Page) ──────────────── */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: float 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.orb-blue {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%);
+}
+
+.orb-indigo {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+}
+
+.orb-purple {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+}
+
+/* ── Selection ─────────────────────────────────────── */
+::selection {
+  background: rgba(59, 130, 246, 0.2);
+  color: #1d4ed8;
 }
