@@ -65,6 +65,24 @@ export default async function Profile({ params }) {
 
   const score = parseFloat(profile.collaboration_score ?? 5)
 
+  let githubRepos = [];
+  if (profile.github_url) {
+    try {
+      const username = profile.github_url.split('github.com/')[1]?.split('/')[0]?.trim();
+      if (username) {
+        const repoResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=4`, {
+          headers: { 'User-Agent': 'project-hub-app' },
+          next: { revalidate: 3600 }
+        });
+        if (repoResponse.ok) {
+          githubRepos = await repoResponse.json();
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch GitHub repos:", err.message);
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
       <div className="glass-card overflow-hidden">
@@ -171,7 +189,6 @@ export default async function Profile({ params }) {
         <div className="space-y-4">
           <h3 className="section-title flex items-center gap-2">
             <BookOpen size={20} className="text-indigo-500" /> Completed Projects
-            <span className="ml-auto text-sm font-normal text-gray-400">{completedProjects.length} total</span>
           </h3>
           {completedProjects.length === 0 ? (
             <div className="glass-card p-6 text-center text-gray-400 text-sm">
@@ -195,6 +212,37 @@ export default async function Profile({ params }) {
           ))}
         </div>
       </div>
+
+      {/* GitHub Repositories */}
+      {githubRepos && githubRepos.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="section-title flex items-center gap-2">
+            <BookOpen size={20} className="text-blue-500" /> Public GitHub Repositories
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {githubRepos.map(repo => (
+              <a key={repo.id} href={repo.html_url} target="_blank" rel="noreferrer" className="block group">
+                <div className="glass-card p-5 group-hover:ring-2 group-hover:ring-blue-300/40 transition-all h-full flex flex-col justify-between">
+                  <div>
+                    <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors text-sm truncate">{repo.name}</h4>
+                    {repo.description && <p className="text-xs text-gray-500 mt-1 line-clamp-2">{repo.description}</p>}
+                  </div>
+                  <div className="flex items-center gap-4 mt-4 text-xs text-gray-400 font-medium">
+                    {repo.language && (
+                      <span className="flex items-center gap-1">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                        {repo.language}
+                      </span>
+                    )}
+                    <span>⭐ {repo.stargazers_count}</span>
+                    <span>🍴 {repo.forks_count}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

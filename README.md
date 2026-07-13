@@ -1,4 +1,4 @@
-# ProjectHub for Students 🚀
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://aravind-aariv-projecthub.netlify.app)\n\n# ProjectHub for Students 🚀
 
 > A collaboration operating system for college students to find trustworthy teammates, build projects together, and generate verified proof-of-work.
 
